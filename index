@@ -6,9 +6,10 @@ params = require 'params'
 
 DATA_INPUT = params.addOptions 'Data input', ['Close', 'Typical', 'Weighted', 'Heikin-Ashi'], 'Close'
 TRADE_STYLE = params.addOptions 'Trading Style', ['Scalping', 'Mid-Range', 'Long-Term'], 'Mid-Range'
+ORDER_PRICE = params.add 'Global trades at [Market Price x]', 1.00
 TAKE_PCT = params.add "Take Profit % (0 Disables)", 15
 PCT_TO_BOOK = params.add "% of holdings to sell when booking profits", 100
-PCT_OF_FUNDS = params.add "Percent of funds to use for orders", 100
+PCT_OF_FUNDS = paORDER_PRICE = params.add 'Global trades at [Market Price x]', 1.00rams.add "Percent of funds to use for orders", 100
 PCT_OF_SPLIT = params.add "Percent iceberg split", 25
 MINIMUM_ORDER_VALUE = params.add "Minimum order value (exchange threshold)", .001
 
@@ -173,7 +174,7 @@ handle: (context, data) ->
 
 			    ticker = trading.getTicker(i)
 			    buyAmount = Math.min((split/ticker.buy)*.9975, amountRemaining/ticker.buy)
-			    try
+			    price = (ticker.buy/ORDER_PRICE)try
 				trading.buy i, 'ORDER_TYPE', buyAmount
 			    catch error
 				if (/insufficient funds/i.exec(error))
